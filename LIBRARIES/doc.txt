@@ -1,0 +1,11 @@
+# LIBRARIES INFO
+
+The "LIBRARIES" directory includes the following items:
+
+1. Compiled libraries: These files are generated as part of the project build process. 
+They consist compiled artifacts that are essential for the project's functionality.
+
+2. Library assets: Additional resources that are required by the libraries used in the project.
+
+3. Documentation: This directory contains documentation related to the libraries. 
+It includes manuals, guides, or any other files that can help with the installation of the libraries. 
