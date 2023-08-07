@@ -1,5 +1,5 @@
 PROJECT = STM32_DEV_BOARD
-BUILD_DIR = bin
+BUILD_DIR = GENERATED_BINS
 CFILES = $(wildcard SOURCES/CORE/*.c) $(wildcard SOURCES/COMPONENTS/*.c)
 DEVICE = stm32f103c8
 OOCD_FILE = board/stm32f103c8t6
@@ -10,9 +10,3 @@ OPENCM3_DIR = LIBRARIES/libopencm3
 include $(OPENCM3_DIR)/mk/genlink-config.mk
 include rules.mk
 include $(OPENCM3_DIR)/mk/genlink-rules.mk
-
-all: $(BUILD_DIR)/$(PROJECT).bin
-
-$(BUILD_DIR)/$(PROJECT).bin: $(BUILD_DIR)/$(PROJECT).elf @objcopy -O binary $< $@
-
-.PHONY: all
