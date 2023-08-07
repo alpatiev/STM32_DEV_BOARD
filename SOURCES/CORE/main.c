@@ -12,10 +12,6 @@ int main(void) {
 	);
 
 	while (1) {
-		// 1 * 10^7 - const
-		// 1 * 10^6 - around second
-		// 1 * 10^5 - 100ms
-
 		for (int i = 0; i < 1000000; i++) {
 			__asm__("nop");
 		}
@@ -34,6 +30,6 @@ int main(void) {
 
 	2. NOTE : FLASHING
 
-	st-flash --reset write stm_blink_led_test.bin 0x8000000     
+	st-flash --reset write STM32_DEV_BOARD.bin 0x8000000   
 */
 

@@ -164,6 +164,7 @@ endif
 all:
 	@rm -rf $(BUILD_DIR)/SOURCES
 	@mv $(PROJECT).bin $(BUILD_DIR)/
+	@rm -rf $(GENERATED_BINS)
 	@echo "> BUILD COMPLETED WITH RESULT - $(BUILD_DIR)/$(PROJECT).bin"
 
 clean:
