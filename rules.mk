@@ -161,10 +161,17 @@ else
 		$(NULL)
 endif
 
+all:
+	@rm -rf $(BUILD_DIR)/SOURCES
+	@mv $(PROJECT).bin $(BUILD_DIR)/
+	@echo "> BUILD COMPLETED WITH RESULT - $(BUILD_DIR)/$(PROJECT).bin"
+
 clean:
-	find $(BUILD_DIR) -type f -not -name "doc.txt" -delete
-	rm -rf $(GENERATED_BINS)
+	@rm -rf $(BUILD_DIR)/SOURCES
+	@rm -rf $(BUILD_DIR)/$(PROJECT).bin
+	@rm -rf $(GENERATED_BINS)
+	@echo "> CLEANED UP SUCCESSFULLY"
+
 
 .PHONY: all clean flash
 -include $(OBJS:.o=.d)
-
