@@ -162,7 +162,8 @@ else
 endif
 
 clean:
-	rm -rf $(BUILD_DIR) $(GENERATED_BINS)
+	find $(BUILD_DIR) -type f -not -name "doc.txt" -delete
+	rm -rf $(GENERATED_BINS)
 
 .PHONY: all clean flash
 -include $(OBJS:.o=.d)
