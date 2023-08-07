@@ -1,6 +1,8 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
+void toggleAfterWork(int iterations);
+
 int main(void) {
 	rcc_periph_clock_enable(RCC_GPIOC);
 
@@ -11,15 +13,36 @@ int main(void) {
 		GPIO13
 	);
 
-	while (1) {
-		for (int i = 0; i < 1000000; i++) {
-			__asm__("nop");
-		}
+	int longLoop = 500000;
+	int shortLoop = 200000;
 
-		gpio_toggle(GPIOC, GPIO13);
+	gpio_toggle(GPIOC, GPIO13);
+
+	while (1) {
+		toggleAfterWork(shortLoop);
+		toggleAfterWork(shortLoop);
+		toggleAfterWork(shortLoop);
+
+		toggleAfterWork(longLoop);
+		toggleAfterWork(longLoop);
+		toggleAfterWork(longLoop);
 	}
 
 	return 0;
+}
+
+void toggleAfterWork(int iterations) {
+	for (int i = 0; i < iterations; i++) {
+		__asm__("nop");
+	}
+
+	gpio_toggle(GPIOC, GPIO13);
+
+	for (int i = 0; i < iterations; i++) {
+		__asm__("nop");
+	}
+
+	gpio_toggle(GPIOC, GPIO13);
 }
 
 /*
