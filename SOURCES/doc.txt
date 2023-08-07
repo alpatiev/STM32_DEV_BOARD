@@ -1,0 +1,10 @@
+# SOURCES INFO
+
+The "SOURCES" directory contains the following items:
+
+1. CORE directory: This directory holds the main source files that serve as the firmware for the controller. 
+It includes the primary function and other supporting functions that influence the runtime or are used in the STM32's lifecycle. 
+Additionally, it contains the "data_types.c" file, which stores essential data structures used in the project.
+
+2. COMPONENTS directory: Contains HAL abstractions over the "libopencm3" library to provide convenient access to peripherals.
+These abstractions simplify the interaction with hardware components and facilitate reusability across different projects.

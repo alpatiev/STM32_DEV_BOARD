@@ -1,0 +1,6 @@
+# COMPILED INFO
+
+The "COMPILED" directory includes the following items:
+
+1. Generated files: files that are generated as part of the project build process. 
+These files may include binary executables, object files etc.
