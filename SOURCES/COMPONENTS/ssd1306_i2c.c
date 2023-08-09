@@ -35,7 +35,8 @@
 #include <stdlib.h>
 #include <pentacom_font.h>
 #include "pentacom_font.h"
-
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
 
 uint32_t I2C_OLED = I2C2;
 uint8_t OLED_ADDRESS = DEFAULT_7bit_OLED_SLAVE_ADDRESS;
@@ -194,6 +195,38 @@ uint8_t screenRAM[DEFAULTBUFFERLENGTH] = {
 
 uint32_t reg32 __attribute__((unused));
 
+
+// MARK: - DEBUBUG
+
+void setup_blink_signal() {
+  rcc_periph_clock_enable(RCC_GPIOC);
+
+	gpio_set_mode(
+		GPIOC,
+		GPIO_MODE_OUTPUT_2_MHZ,
+		GPIO_CNF_OUTPUT_PUSHPULL,
+		GPIO13
+	);
+
+	gpio_toggle(GPIOC, GPIO13);
+}
+
+void toggle_blink_once() {
+	for (int i = 0; i < 1000000; i++) {
+		__asm__("nop");
+	}
+
+	gpio_toggle(GPIOC, GPIO13);
+
+	for (int i = 0; i < 1000000; i++) {
+		__asm__("nop");
+	}
+
+	gpio_toggle(GPIOC, GPIO13);
+}
+
+// MARK: - DEBUBUG END
+
 void ssd1306_start(void) {
   i2c_send_start(I2C_OLED);
   while (_IF_SB(I2C_OLED));
@@ -205,12 +238,12 @@ void ssd1306_start(void) {
 
 void ssd1306_stop(void) {
   i2c_send_stop(I2C_OLED);
-  while (_IF_BTF(I2C_OLED));
+  //while (_IF_BTF(I2C_OLED));
 }
 
 void ssd1306_send(uint8_t spec) {
   i2c_send_data(I2C_OLED, spec);
-  while (_IF_TxE(I2C_OLED));
+  //while (_IF_TxE(I2C_OLED));
 }
 
 void ssd1306_send_data(uint8_t spec, uint8_t data) {
@@ -265,6 +298,9 @@ void ssd1306_init(uint32_t i2c, uint8_t address, uint8_t width, uint8_t height) 
   ssd1306_switchOLEDOn(true);
 
   ssd1306_refresh();
+
+  setup_blink_signal();
+  toggle_blink_once();
 }
 
 /**
@@ -595,7 +631,7 @@ void ssd1306_drawWCharStr(uint8_t x, int8_t y, Color color, WrapType wrType, wch
           xx = x;
           yy += 8;
       }
-    for (uint8_t i=0; i<charCur->size; i++){
+    for (uint8_t i=0; i<charCur->size; i++) {
       uint8_t p = (color==white) ? charCur->l[i]: ~charCur->l[i];
       ssd1306_drawVPattern(xx,yy, p);
       xx += 1;

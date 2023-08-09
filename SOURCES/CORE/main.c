@@ -59,7 +59,7 @@ static void i2c_setup(void) {
    * This is our slave address - needed only if we want to receive from
    * other masters.
    */
-  i2c_set_own_7bit_slave_address(I2C2, 0x32);
+  //i2c_set_own_7bit_slave_address(I2C2, 0x32);
 
   /* If everything is configured -> enable the peripheral. */
   i2c_peripheral_enable(I2C2);
@@ -100,7 +100,7 @@ int main(void) {
   i2c_setup();
   board_setup();
 
-  ssd1306_init(I2C2, DEFAULT_7bit_OLED_SLAVE_ADDRESS, 128, 32);
+  ssd1306_init(I2C2, DEFAULT_7bit_OLED_SLAVE_ADDRESS, 128, 64);
 
   step = 1;
   int16_t y = 0;
@@ -110,9 +110,7 @@ int main(void) {
         for (int i =0; i<8; i++) {
           y += step;
           ssd1306_clear();
-          ssd1306_drawWCharStr(0, y, white, wrapDisplay, L"Это текст с цифрами 01234567890 и " \
-          "cимволами .!№;%:?*()), ну че, watsup my nigga??!.\n"  \
-          "There is a lot text with ENGLISH or latin symbols!\n\n"\
+          ssd1306_drawWCharStr(0, y, white, wrapDisplay, L"Это W\n"\
           "Кажется у меня получилось отрисовать это дерьмо\n\n "
           );
           ssd1306_refresh();
