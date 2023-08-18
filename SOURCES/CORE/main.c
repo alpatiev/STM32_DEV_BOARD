@@ -1,7 +1,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-static int delay = 600000;
+static int delay = 1000000;
 
 static void clock_setup(void)
 {
@@ -26,7 +26,7 @@ static void gpio_setup(void)
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_FULL_SWJ_NO_JNTRST;
 	
 	/* Set GPIOs (in GPIO port B) to 'output push-pull'. */
-	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO4 | GPIO5 | GPIO6 | GPIO7 | GPIO8);
+	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1 | GPIO4 | GPIO5 | GPIO6);
 
 	/* 
 	Set GPIO13 to 'output push-pull' for embedded led. 
@@ -41,6 +41,35 @@ static void cpu_pause(int timeout)
 	}
 }
 
+static void gpio_blink_selected(int gpio_index) 
+{
+	int gpio_selected;
+
+	switch (gpio_index)
+	{
+	case 1:
+		gpio_selected = GPIO0;
+		break;
+	case 2:
+		gpio_selected = GPIO1;
+		break;
+	case 3:
+		gpio_selected = GPIO4;
+		break;
+	case 4:
+		gpio_selected = GPIO5;
+		break;
+	case 5:
+		gpio_selected = GPIO6;
+		break;	
+	default:
+		return;
+	}
+
+	gpio_toggle(GPIOB, gpio_selected);
+	cpu_pause(delay);
+	gpio_toggle(GPIOB, gpio_selected);
+}
 
 int main(void)
 {
@@ -48,41 +77,26 @@ int main(void)
 	gpio_setup();
 
 	gpio_toggle(GPIOB, GPIO4);
+	
+	int straight_direction = true;
+	int position = 1;
 
 	while (1) {
-		gpio_toggle(GPIOB, GPIO4);
+		gpio_blink_selected(position);
 
-		cpu_pause(delay);
+		if (straight_direction) {
+			position += 1;
+		} else {
+			position -= 1;
+		}
 
-		//		gpio_toggle(GPIOB, GPIO4);
-
-		gpio_toggle(GPIOB, GPIO5);
-
-		cpu_pause(delay);
-
-		//		gpio_toggle(GPIOB, GPIO5);
-
-
-		gpio_toggle(GPIOB, GPIO6);
-
-		cpu_pause(delay);
-
-		//		gpio_toggle(GPIOB, GPIO6);
-
-
-		gpio_toggle(GPIOB, GPIO7);
-
-		cpu_pause(delay);
-
-		//		gpio_toggle(GPIOB, GPIO7);
-
-
-		gpio_toggle(GPIOB, GPIO8);
-
-		cpu_pause(delay);
-
-		//		gpio_toggle(GPIOB, GPIO8);
-
+		if (position > 5) {
+			straight_direction = false;
+			position = 4;
+		} else if (position < 1) {
+			straight_direction = true;
+			position = 2;
+		}
 	}
 
 	return 0;
