@@ -1,7 +1,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-static int delay = 1000000;
+static int delay = 3000000;
 
 static void clock_setup(void)
 {
@@ -26,7 +26,10 @@ static void gpio_setup(void)
 	AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_FULL_SWJ_NO_JNTRST;
 	
 	/* Set GPIOs (in GPIO port B) to 'output push-pull'. */
-	gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1 | GPIO4 | GPIO5 | GPIO6);
+	gpio_set_mode(GPIOB, 
+					GPIO_MODE_OUTPUT_50_MHZ, 
+					GPIO_CNF_OUTPUT_PUSHPULL,
+					GPIO0 | GPIO1 | GPIO4 | GPIO5 | GPIO6 | GPIO7 |GPIO8 | GPIO9);
 
 	/* 
 	Set GPIO13 to 'output push-pull' for embedded led. 
@@ -41,34 +44,41 @@ static void cpu_pause(int timeout)
 	}
 }
 
-static void gpio_blink_selected(int gpio_index) 
+static void gpio_set_display(char code, bool flag) 
 {
 	int gpio_selected;
-
-	switch (gpio_index)
+	switch (code)
 	{
-	case 1:
+	case 'e':
+		gpio_selected = GPIO9;
+		break;
+	case 'd':
+		gpio_selected = GPIO8;
+		break;
+	case 'c':
+		gpio_selected = GPIO7;
+		break;
+	case 'g':
 		gpio_selected = GPIO0;
 		break;
-	case 2:
-		gpio_selected = GPIO1;
-		break;
-	case 3:
-		gpio_selected = GPIO4;
-		break;
-	case 4:
+	case 'b':
 		gpio_selected = GPIO5;
 		break;
-	case 5:
+	case 'a':
+		gpio_selected = GPIO4;
+		break;
+	case 'f':
+		gpio_selected = GPIO1;
+		break;
+	case '.':
 		gpio_selected = GPIO6;
 		break;	
 	default:
 		return;
 	}
 
-	gpio_toggle(GPIOB, gpio_selected);
+	gpio_set(gpio_selected, flag);
 	cpu_pause(delay);
-	gpio_toggle(GPIOB, gpio_selected);
 }
 
 int main(void)
@@ -76,27 +86,25 @@ int main(void)
 	clock_setup();
 	gpio_setup();
 
-	gpio_toggle(GPIOB, GPIO4);
-	
-	int straight_direction = true;
-	int position = 1;
 
 	while (1) {
-		gpio_blink_selected(position);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('g', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);
+		gpio_set_display('f', true);
+		gpio_set_display('.', true);
 
-		if (straight_direction) {
-			position += 1;
-		} else {
-			position -= 1;
-		}
-
-		if (position > 5) {
-			straight_direction = false;
-			position = 4;
-		} else if (position < 1) {
-			straight_direction = true;
-			position = 2;
-		}
+		gpio_set_display('e', false);
+		gpio_set_display('d', false);
+		gpio_set_display('c', false);
+		gpio_set_display('g', false);
+		gpio_set_display('b', false);
+		gpio_set_display('a', false);
+		gpio_set_display('f', false);
+		gpio_set_display('.', false);
 	}
 
 	return 0;
