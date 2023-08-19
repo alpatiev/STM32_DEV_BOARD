@@ -76,9 +76,116 @@ static void gpio_set_display(char code, bool flag)
 	default:
 		return;
 	}
+	
+	if (flag) {
+		gpio_set(GPIOB, gpio_selected);
+	} else {
+		gpio_clear(GPIOB, gpio_selected);
+	}
+}
 
-	gpio_set(gpio_selected, flag);
-	cpu_pause(delay);
+static void gpio_display_digit(int digit)
+{
+	switch (digit)
+	{
+	case (0): // 0111111	
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);
+		break;
+	case (1): // 0000110
+		gpio_set_display('g', false);
+		gpio_set_display('f', false);
+		gpio_set_display('e', false);
+		gpio_set_display('d', false);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', false);	
+		break;
+	case (2): // 1011011
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);
+		break;
+	case (3): // 1001111
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (4): // 1100110
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (5): // 1101101
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (6): // 1111101
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (7): // 0000111
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (8): // 1111111
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	case (9): // 1001111
+		gpio_set_display('g', false);
+		gpio_set_display('f', true);
+		gpio_set_display('e', true);
+		gpio_set_display('d', true);
+		gpio_set_display('c', true);
+		gpio_set_display('b', true);
+		gpio_set_display('a', true);	
+		break;
+	default:
+		break;
+	}
+}
+
+static void gpio_led_off(void)
+{
+	gpio_clear(GPIOB, GPIO0 | GPIO1 | GPIO4 | GPIO5 | GPIO6 | GPIO7 |GPIO8 | GPIO9);
 }
 
 int main(void)
@@ -86,25 +193,17 @@ int main(void)
 	clock_setup();
 	gpio_setup();
 
-
 	while (1) {
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('g', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);
-		gpio_set_display('f', true);
-		gpio_set_display('.', true);
-
-		gpio_set_display('e', false);
-		gpio_set_display('d', false);
-		gpio_set_display('c', false);
-		gpio_set_display('g', false);
-		gpio_set_display('b', false);
-		gpio_set_display('a', false);
-		gpio_set_display('f', false);
-		gpio_set_display('.', false);
+		gpio_display_digit(8);
+		cpu_pause(delay);
+		gpio_display_digit(0);
+		cpu_pause(delay);
+		gpio_display_digit(0);
+		cpu_pause(delay);
+		gpio_display_digit(8);
+		cpu_pause(delay);
+		gpio_display_digit(5);
+		cpu_pause(delay);
 	}
 
 	return 0;
@@ -121,4 +220,3 @@ int main(void)
 
 	st-flash --reset write STM32_DEV_BOARD.bin 0x8000000   
 */
-
