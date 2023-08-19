@@ -1,7 +1,9 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-static int delay = 3000000;
+static int delay = 5000000;
+static int gpio_selected = 0;
+
 
 static void clock_setup(void)
 {
@@ -44,139 +46,50 @@ static void cpu_pause(int timeout)
 	}
 }
 
-static void gpio_set_display(char code, bool flag) 
-{
-	int gpio_selected;
-	switch (code)
-	{
-	case 'e':
-		gpio_selected = GPIO9;
-		break;
-	case 'd':
-		gpio_selected = GPIO8;
-		break;
-	case 'c':
-		gpio_selected = GPIO7;
-		break;
-	case 'g':
-		gpio_selected = GPIO0;
-		break;
-	case 'b':
-		gpio_selected = GPIO5;
-		break;
-	case 'a':
-		gpio_selected = GPIO4;
-		break;
-	case 'f':
-		gpio_selected = GPIO1;
-		break;
-	case '.':
-		gpio_selected = GPIO6;
-		break;	
-	default:
-		return;
-	}
-	
-	if (flag) {
-		gpio_set(GPIOB, gpio_selected);
-	} else {
-		gpio_clear(GPIOB, gpio_selected);
-	}
-}
-
 static void gpio_display_digit(int digit)
 {
-	switch (digit)
+	//   G  -  F  -  E  -  D  -  C  -  B  -  A 
+	// GPIO0 GPIO1 GPIO9 GPIO8 GPIO7 GPIO5 GPIO4
+ 	switch (digit)
 	{
 	case (0): // 0111111	
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);
+		gpio_clear(GPIOB, GPIO0);
+		gpio_set(GPIOB, GPIO1 | GPIO9 | GPIO8 | GPIO7 | GPIO5 |GPIO4);
 		break;
 	case (1): // 0000110
-		gpio_set_display('g', false);
-		gpio_set_display('f', false);
-		gpio_set_display('e', false);
-		gpio_set_display('d', false);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', false);	
+		gpio_clear(GPIOB, GPIO0 | GPIO1 | GPIO9 | GPIO8 | GPIO4);
+		gpio_set(GPIOB, GPIO7 | GPIO5);
 		break;
 	case (2): // 1011011
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);
+		gpio_clear(GPIOB, GPIO1 | GPIO7);
+		gpio_set(GPIOB, GPIO0 | GPIO9 | GPIO8 | GPIO5 | GPIO4);
 		break;
 	case (3): // 1001111
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_clear(GPIOB, GPIO1 | GPIO9);
+		gpio_set(GPIOB, GPIO0 | GPIO8 | GPIO7 | GPIO5 |GPIO4);	
 		break;
 	case (4): // 1100110
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_clear(GPIOB, GPIO9 | GPIO8 | GPIO4);
+		gpio_set(GPIOB, GPIO0 | GPIO1 | GPIO7 | GPIO5);
 		break;
 	case (5): // 1101101
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_clear(GPIOB, GPIO9 | GPIO5);
+		gpio_set(GPIOB, GPIO0 | GPIO1 | GPIO8 | GPIO7 |GPIO4);
 		break;
 	case (6): // 1111101
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_clear(GPIOB, GPIO5);
+		gpio_set(GPIOB, GPIO0 | GPIO1 | GPIO9 | GPIO8 | GPIO7 |GPIO4);	
 		break;
 	case (7): // 0000111
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_clear(GPIOB, GPIO0 | GPIO1 | GPIO9 | GPIO8);
+		gpio_set(GPIOB, GPIO7 | GPIO5 |GPIO4);
 		break;
 	case (8): // 1111111
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+		gpio_set(GPIOB, GPIO0 | GPIO1 | GPIO9 | GPIO8 | GPIO7 | GPIO5 |GPIO4);	
 		break;
-	case (9): // 1001111
-		gpio_set_display('g', false);
-		gpio_set_display('f', true);
-		gpio_set_display('e', true);
-		gpio_set_display('d', true);
-		gpio_set_display('c', true);
-		gpio_set_display('b', true);
-		gpio_set_display('a', true);	
+	case (9): // 1101111
+		gpio_clear(GPIOB, GPIO9);
+		gpio_set(GPIOB, GPIO0 | GPIO1 | GPIO8 | GPIO7 | GPIO5 |GPIO4);	
 		break;
 	default:
 		break;
@@ -192,17 +105,19 @@ int main(void)
 {
 	clock_setup();
 	gpio_setup();
+	gpio_led_off();
+
+	int number = 0;
 
 	while (1) {
-		gpio_display_digit(8);
-		cpu_pause(delay);
-		gpio_display_digit(0);
-		cpu_pause(delay);
-		gpio_display_digit(0);
-		cpu_pause(delay);
-		gpio_display_digit(8);
-		cpu_pause(delay);
-		gpio_display_digit(5);
+		gpio_display_digit(number);
+
+		if (number > 9) {
+			number = 0;
+		} else {
+			number++;
+		}
+
 		cpu_pause(delay);
 	}
 
